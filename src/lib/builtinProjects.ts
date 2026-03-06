@@ -1,0 +1,34 @@
+/**
+ * Built-in projects are added via code, not through the UI.
+ * Each project has a `slug` that maps to a route under /projects/[slug].
+ */
+export interface BuiltinProject {
+  id: string;
+  name: string;
+  description: string;
+  slug: string;
+  tags: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const BUILTIN_PROJECTS: BuiltinProject[] = [
+  {
+    id: "builtin-collection-card",
+    name: "Collection Card",
+    description: "Browse, filter and inspect NFT collection cards from the wallet API.",
+    slug: "collection-card",
+    tags: ["API", "NFT", "Cards", "Wallet"],
+    createdAt: "2026-02-25T00:00:00.000Z",
+    updatedAt: "2026-02-25T00:00:00.000Z",
+  },
+  {
+    id: "builtin-buzznet",
+    name: "Buzznet",
+    description: "Batch-generate AI article interaction content from a CSV of persona segments.",
+    slug: "buzznet",
+    tags: ["AI", "Content", "Batch", "CSV"],
+    createdAt: "2026-03-06T00:00:00.000Z",
+    updatedAt: "2026-03-06T00:00:00.000Z",
+  },
+];
