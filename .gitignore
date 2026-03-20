@@ -42,3 +42,7 @@ next-env.d.ts
 # Misc
 .vercel
 .turbo
+
+.claude
+docs
+plans

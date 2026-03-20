@@ -31,4 +31,13 @@ export const BUILTIN_PROJECTS: BuiltinProject[] = [
     createdAt: "2026-03-06T00:00:00.000Z",
     updatedAt: "2026-03-06T00:00:00.000Z",
   },
+  {
+    id: "builtin-distribution-tester",
+    name: "Distribution Engine Tester",
+    description: "Verify influencer post distribution logic — input a post ID, query DB, and see pass/fail checks.",
+    slug: "distribution-tester",
+    tags: ["DB", "Distribution", "Verification", "Influencer"],
+    createdAt: "2026-03-19T00:00:00.000Z",
+    updatedAt: "2026-03-19T00:00:00.000Z",
+  },
 ];

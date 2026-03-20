@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="vi">
       <body className={inter.className}>
         <Sidebar />
-        <main className="ml-64 min-h-screen">
+        <main className="md:ml-64 min-h-screen">
           {children}
         </main>
       </body>
