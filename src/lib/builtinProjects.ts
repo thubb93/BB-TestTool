@@ -40,4 +40,13 @@ export const BUILTIN_PROJECTS: BuiltinProject[] = [
     createdAt: "2026-03-19T00:00:00.000Z",
     updatedAt: "2026-03-19T00:00:00.000Z",
   },
+  {
+    id: "builtin-checkout-simulator",
+    name: "Checkout Simulator",
+    description: "Simulate a product checkout page and test the transaction API.",
+    slug: "checkout-simulator",
+    tags: ["Payment", "Checkout", "Transaction", "API"],
+    createdAt: "2026-03-23T00:00:00.000Z",
+    updatedAt: "2026-03-23T00:00:00.000Z",
+  },
 ];
