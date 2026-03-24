@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight, Minus, Plus, Settings, X } from "lucide-react";
+import { ChevronRight, Minus, Plus, Settings, X, CheckCircle, AlertCircle } from "lucide-react";
 
 const PRODUCT = {
   name: "AI Avatar License - Basic",
@@ -25,10 +25,30 @@ interface TxConfig {
   api_key: string;
 }
 
+interface Toast {
+  id: number;
+  type: "success" | "error";
+  message: string;
+}
+
+/** Auto-dismiss toast after 4s */
+function useToast() {
+  const [toasts, setToasts] = useState<Toast[]>([]);
+
+  const addToast = (type: Toast["type"], message: string) => {
+    const id = Date.now();
+    setToasts((prev) => [...prev, { id, type, message }]);
+    setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), 4000);
+  };
+
+  const removeToast = (id: number) => setToasts((prev) => prev.filter((t) => t.id !== id));
+
+  return { toasts, addToast, removeToast };
+}
+
 export default function CheckoutSimulatorPage() {
   const [qty, setQty] = useState(1);
   const [status, setStatus] = useState<ApiStatus>("idle");
-  const [response, setResponse] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [config, setConfig] = useState<TxConfig>({
     id_origin: "EXT-ORD-001",
@@ -36,8 +56,8 @@ export default function CheckoutSimulatorPage() {
     aff_id: "AFF-001",
     api_key: API_KEY,
   });
-  // draft state while settings panel is open
   const [draft, setDraft] = useState<TxConfig>(config);
+  const { toasts, addToast, removeToast } = useToast();
 
   const openSettings = () => {
     setDraft(config);
@@ -51,7 +71,6 @@ export default function CheckoutSimulatorPage() {
 
   const handleBuy = async () => {
     setStatus("loading");
-    setResponse(null);
     try {
       const body = {
         id_origin: config.id_origin,
@@ -80,16 +99,40 @@ export default function CheckoutSimulatorPage() {
       });
 
       const data = await res.json();
-      setResponse(JSON.stringify(data, null, 2));
+      const msg = data?.message ?? (res.ok ? "Transaction created successfully" : "Request failed");
+      addToast(res.ok ? "success" : "error", msg);
       setStatus(res.ok ? "success" : "error");
     } catch (err) {
+      addToast("error", err instanceof Error ? err.message : "Unknown error");
       setStatus("error");
-      setResponse(err instanceof Error ? err.message : "Unknown error");
     }
   };
 
   return (
     <div className="min-h-screen bg-white text-gray-900 relative">
+      {/* Toast container */}
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2 items-center">
+        {toasts.map((t) => (
+          <div
+            key={t.id}
+            className={`flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg text-sm font-medium border animate-in fade-in slide-in-from-top-2 duration-300 ${
+              t.type === "success"
+                ? "bg-white border-green-200 text-green-800"
+                : "bg-white border-red-200 text-red-700"
+            }`}
+          >
+            {t.type === "success"
+              ? <CheckCircle size={16} className="text-green-500 shrink-0" />
+              : <AlertCircle size={16} className="text-red-500 shrink-0" />
+            }
+            <span>{t.message}</span>
+            <button onClick={() => removeToast(t.id)} className="ml-2 opacity-50 hover:opacity-100">
+              <X size={14} />
+            </button>
+          </div>
+        ))}
+      </div>
+
       {/* Settings button — top-right */}
       <button
         onClick={openSettings}
@@ -102,10 +145,7 @@ export default function CheckoutSimulatorPage() {
       {/* Settings panel overlay */}
       {showSettings && (
         <div className="fixed inset-0 z-50 flex items-start justify-end">
-          {/* Backdrop */}
           <div className="absolute inset-0 bg-black/20" onClick={() => setShowSettings(false)} />
-
-          {/* Panel */}
           <div className="relative mt-14 mr-4 w-80 bg-white rounded-xl shadow-xl border border-gray-200 p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-gray-900">Transaction Config</h3>
@@ -151,13 +191,7 @@ export default function CheckoutSimulatorPage() {
       <div className="max-w-6xl mx-auto px-8 pb-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
         {/* Product Image */}
         <div className="relative aspect-[4/5] w-full rounded overflow-hidden bg-gray-100">
-          <Image
-            src={PRODUCT.image}
-            alt={PRODUCT.name}
-            fill
-            className="object-cover"
-            unoptimized
-          />
+          <Image src={PRODUCT.image} alt={PRODUCT.name} fill className="object-cover" unoptimized />
         </div>
 
         {/* Product Info */}
@@ -208,17 +242,6 @@ export default function CheckoutSimulatorPage() {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.064-.022.134-.033.199-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .625.285.625.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
             </button>
           </div>
-
-          {/* API Response */}
-          {response && (
-            <div className={`mt-6 rounded-lg p-4 text-xs font-mono whitespace-pre-wrap overflow-auto max-h-48 border ${
-              status === "success"
-                ? "bg-green-50 border-green-200 text-green-800"
-                : "bg-red-50 border-red-200 text-red-800"
-            }`}>
-              {response}
-            </div>
-          )}
         </div>
       </div>
     </div>
