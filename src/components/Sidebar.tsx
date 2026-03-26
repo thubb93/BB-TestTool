@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, Settings, FlaskConical } from "lucide-react";
+import { LayoutGrid, Settings, FlaskConical, ClipboardList } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/", label: "Projects", icon: LayoutGrid },
+  { href: "/testcase", label: "Testcase", icon: ClipboardList },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 

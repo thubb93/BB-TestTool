@@ -70,6 +70,8 @@ async function buildEntry(cfg: DBConfig): Promise<CacheEntry> {
         waitForConnections: true,
         connectionLimit: 5,
         connectTimeout: 5000,
+        // Enable SSL for cloud-hosted MySQL (e.g. AWS RDS) which uses caching_sha2_password
+        ssl: { rejectUnauthorized: false },
       });
       break;
     }

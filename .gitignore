@@ -49,3 +49,6 @@ plans
 CLAUDE.md
 spec
 playwright.*
+
+# Tests
+qe-reports

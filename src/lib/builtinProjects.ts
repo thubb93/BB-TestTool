@@ -41,6 +41,15 @@ export const BUILTIN_PROJECTS: BuiltinProject[] = [
     updatedAt: "2026-03-19T00:00:00.000Z",
   },
   {
+    id: "builtin-nft-prime-distributor",
+    name: "NFT Prime Distributor",
+    description: "Set up DB end_date + cron schedule to trigger Art Prime NFT distribution for UAT test emails.",
+    slug: "nft-prime-distributor",
+    tags: ["NFT", "DB", "Cron", "Shopify", "Prime"],
+    createdAt: "2026-03-26T00:00:00.000Z",
+    updatedAt: "2026-03-26T00:00:00.000Z",
+  },
+  {
     id: "builtin-checkout-simulator",
     name: "Checkout Simulator",
     description: "Simulate a product checkout page and test the transaction API.",
