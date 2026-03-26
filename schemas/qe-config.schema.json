@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "qe-config.schema.json",
+  "title": "qe-kit Configuration",
+  "description": "Schema for .qe.json configuration file",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference"
+    },
+    "thresholds": {
+      "type": "object",
+      "description": "Quality gate thresholds",
+      "additionalProperties": false,
+      "properties": {
+        "coverage": {
+          "type": "object",
+          "description": "Code coverage thresholds (percentages)",
+          "additionalProperties": false,
+          "properties": {
+            "lines":     { "type": "number", "minimum": 0, "maximum": 100 },
+            "branches":  { "type": "number", "minimum": 0, "maximum": 100 },
+            "functions": { "type": "number", "minimum": 0, "maximum": 100 },
+            "statements":{ "type": "number", "minimum": 0, "maximum": 100 }
+          }
+        },
+        "performance": {
+          "type": "object",
+          "description": "Web Vitals thresholds (milliseconds / unitless)",
+          "additionalProperties": false,
+          "properties": {
+            "lcp": { "type": "number", "minimum": 0, "description": "Largest Contentful Paint (ms)" },
+            "cls": { "type": "number", "minimum": 0, "description": "Cumulative Layout Shift (unitless)" },
+            "inp": { "type": "number", "minimum": 0, "description": "Interaction to Next Paint (ms)" },
+            "fcp": { "type": "number", "minimum": 0, "description": "First Contentful Paint (ms)" },
+            "ttfb":{ "type": "number", "minimum": 0, "description": "Time to First Byte (ms)" }
+          }
+        },
+        "accessibility": {
+          "type": "object",
+          "description": "Accessibility thresholds",
+          "additionalProperties": false,
+          "properties": {
+            "wcag": {
+              "type": "string",
+              "enum": ["A", "AA", "AAA"],
+              "description": "WCAG conformance level"
+            },
+            "violations": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Maximum allowed axe-core violations"
+            }
+          }
+        }
+      }
+    },
+    "stack": {
+      "type": "object",
+      "description": "Testing tool stack configuration",
+      "additionalProperties": false,
+      "properties": {
+        "e2e": {
+          "type": "string",
+          "enum": ["auto", "playwright", "cypress", "puppeteer", "webdriverio"],
+          "description": "E2E testing framework"
+        },
+        "unit": {
+          "type": "string",
+          "enum": ["auto", "jest", "vitest", "mocha", "jasmine", "pytest", "go-test"],
+          "description": "Unit testing framework"
+        },
+        "load": {
+          "type": "string",
+          "enum": ["k6", "artillery", "locust", "jmeter", "none"],
+          "description": "Load/performance testing tool"
+        },
+        "a11y": {
+          "type": "string",
+          "enum": ["axe-core", "pa11y", "lighthouse", "none"],
+          "description": "Accessibility testing tool"
+        },
+        "security": {
+          "type": "string",
+          "enum": ["zap", "snyk", "semgrep", "none"],
+          "description": "Security scanning tool"
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "description": "Quality gate definitions per pipeline stage",
+      "additionalProperties": false,
+      "properties": {
+        "preCommit": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Checks to run before commit"
+        },
+        "preMerge": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Checks to run before PR merge"
+        },
+        "preRelease": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Checks to run before release"
+        },
+        "strictMode": {
+          "type": "boolean",
+          "description": "If true, pre-commit gate blocks commit on violations (default: warn only)",
+          "default": false
+        }
+      }
+    },
+    "reports": {
+      "type": "object",
+      "description": "Report output configuration",
+      "additionalProperties": false,
+      "properties": {
+        "dir": {
+          "type": "string",
+          "description": "Directory for generated reports",
+          "default": "qe-reports"
+        },
+        "format": {
+          "type": "string",
+          "enum": ["markdown", "json", "html", "junit"],
+          "description": "Report output format",
+          "default": "markdown"
+        },
+        "retention": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of reports to retain per type"
+        }
+      }
+    },
+    "hooks": {
+      "type": "object",
+      "description": "Custom hook overrides (key: hook name, value: command string)",
+      "additionalProperties": { "type": "string" }
+    }
+  }
+}

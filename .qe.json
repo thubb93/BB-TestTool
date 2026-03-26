@@ -1,0 +1,24 @@
+{
+  "$schema": "./schemas/qe-config.schema.json",
+  "thresholds": {
+    "coverage": { "lines": 80, "branches": 70, "functions": 80 },
+    "performance": { "lcp": 2500, "cls": 0.1, "inp": 200 },
+    "accessibility": { "wcag": "AA", "violations": 0 }
+  },
+  "stack": {
+    "e2e": "auto",
+    "unit": "auto",
+    "load": "k6",
+    "a11y": "axe-core"
+  },
+  "gates": {
+    "preCommit": ["lint", "unit"],
+    "preMerge": ["unit", "integration", "coverage"],
+    "preRelease": ["e2e", "perf", "security", "a11y"]
+  },
+  "reports": {
+    "dir": "qe-reports",
+    "format": "markdown"
+  },
+  "hooks": {}
+}
