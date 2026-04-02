@@ -1,0 +1,25 @@
+{
+  "name": "bb-testool-slack-bot",
+  "version": "1.0.0",
+  "description": "Slack bot bridge for BB-TestTool — run QE skills remotely from Slack",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@slack/bolt": "^3.21.1",
+    "@slack/web-api": "^7.3.4",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "form-data": "^4.0.0",
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.14.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.5"
+  }
+}
