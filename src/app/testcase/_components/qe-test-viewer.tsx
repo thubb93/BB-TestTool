@@ -95,11 +95,11 @@ export default function QeTestViewer({ filename, content }: Props) {
   const pct = (n: number) => total ? (n / total * 100) : 0;
 
   const exportCSV = () => {
-    const headers = ["ID","Module","Title","Priority","Preconditions","Steps","Expected Result","Test Data","Tags","Result","Notes"];
+    const headers = ["ID","Title","Module","Priority","Tags","Test Data","Preconditions","Steps","Expected Result","Result","Notes"];
     const cell = (v: string) => `"${String(v||"").replace(/"/g,'""').replace(/<br>/gi," | ")}"`;
     const rows = allCases.map(tc => [
-      tc.id, tc.module, tc.title, tc.priority, tc.preconditions,
-      tc.steps, tc.expected, tc.testData, tc.tags,
+      tc.id, tc.title, tc.module, tc.priority, tc.tags,
+      tc.testData, tc.preconditions, tc.steps, tc.expected,
       results[tc.id] || "pending", notes[tc.id] || "",
     ].map(v => cell(String(v))).join(","));
     const csv = "\uFEFF" + [headers.map(h => `"${h}"`).join(","), ...rows].join("\r\n");
